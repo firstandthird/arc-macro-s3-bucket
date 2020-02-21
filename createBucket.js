@@ -1,3 +1,0 @@
-const createBucket = async(bucketConfig) => {
-
-};
