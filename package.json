@@ -19,7 +19,9 @@
   "eslintConfig": {
     "extends": "firstandthird"
   },
-  "dependencies": {},
+  "dependencies": {
+    "aws-sdk": "^2.623.0"
+  },
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-config-firstandthird": "^4.4.0",
