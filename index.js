@@ -41,12 +41,12 @@ module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
       }
       // modify arcformation
       cloudformation.Resources.Role.Properties.Policies.push({
-        PolicyName: 'ArcS3Access',
+        PolicyName: `ArcS3Access-${bucketName}`,
         PolicyDocument: {
           Statement: [{
             Effect: 'Allow',
             Action: 's3:*',
-            Resource: '*'
+            Resource: `arn:aws:s3:::${bucketName}/*`
           }]
         }
       });

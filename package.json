@@ -4,7 +4,7 @@
   "description": "arc macro for making s3 buckets",
   "main": "index.js",
   "scripts": {
-    "test": "tap test"
+    "test": "tap test.js"
   },
   "repository": {
     "type": "git",

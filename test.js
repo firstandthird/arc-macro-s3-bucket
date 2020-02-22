@@ -33,5 +33,9 @@ tap.test('load cloudformation', async t => {
   } catch (e) {
     // error is supposed to occur here
   }
+  t.match(result.Resources.Role.Properties.Policies[0].PolicyDocument.Statement[0],
+  {
+    Resource: 'arn:aws:s3:::no-real-bucketeh-staging/*'
+  });
   t.end();
 });
