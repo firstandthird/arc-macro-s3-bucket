@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const caps = require('lodash.capitalize');
 
 /**
  * @param {object} arc - the parsed .arc file currently executing
@@ -8,6 +9,29 @@ const AWS = require('aws-sdk');
 module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
   const config = arc.s3;
   const buckets = {};
+  // get the paths with the correct name formatting:
+  const paths = arc.http.map(list => {
+    return list.map(component => {
+      const p = component.replace(/\//g, '');
+      const pList = p.split(':');
+      return pList.map(caps).join('')
+    }).join('');
+  });
+  let mainBucket;
+  arc.aws.forEach(f => {
+    if (f[0] === 'bucket') {
+      mainBucket = f[1];
+    }
+  });
+  mainBucket = process.env.S3_BUCKET || mainBucket;
+  paths.map(p => {
+    if (p === 'Get') {
+      p = 'GetIndex';
+    }
+    if (cloudformation.Resources[p]) {
+      cloudformation.Resources[p].Properties.Environment.Variables.S3_BUCKET = mainBucket;
+    }
+  })
   const aws = new AWS.S3();
   // for each bucket:
   await Promise.all(config.map(b => {
@@ -39,6 +63,7 @@ module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
           Bucket: bucketName
         }).promise();
       }
+      const env = process.env.S3_BUCKET || '';
       // modify arcformation
       cloudformation.Resources.Role.Properties.Policies.push({
         PolicyName: `ArcS3Access-${bucketName}`,
