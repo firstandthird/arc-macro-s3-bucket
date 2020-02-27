@@ -44,7 +44,7 @@ module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
         }
         // bucketname will be "{name}-production" or "{name}-staging"
         // if bucket is marked 'unique' it will have a timestamp appended to the end:
-        bucketName = `${b[1]}-${b[0]}${b[2] && b[2].toLowerCase() === 'unique' ? new Date().getTime() : ''}`;
+        bucketName = `${b[1]}${b[2] && b[2].toLowerCase() === 'unique' ? new Date().getTime() : ''}`;
       }
       // see if buckets exist on s3:
       let exists = false;
