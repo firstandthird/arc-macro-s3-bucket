@@ -61,14 +61,13 @@ module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
       }
       // create bucket in the cloudformation template if it doesn't exist:
       if (!exists) {
-        const s3Resource = {
+        cloudformation.Resources[bucketName] = {
           Type: "AWS::S3::Bucket",
           Properties: {
             BucketName: bucketName,
             // todo: any other properties we want?
           }
         };
-        cloudformation.Resources[bucketName] = s3Resource;
       }
       const env = process.env.S3_BUCKET || '';
       // modify arcformation
