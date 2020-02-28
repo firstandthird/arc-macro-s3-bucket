@@ -6,7 +6,7 @@ const caps = require('lodash.capitalize');
  * @param {object} cloudformation - the current AWS::Serverless CloudFormation template
  * @param {object} stage - the application stage (one of `staging` or `production`)
  */
-module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
+module.exports = function arcBucketMacro(arc, cloudformation, stage) {
   const config = arc.s3;
   const buckets = {};
   // set the S3_BUCKET env variable for every lambda we create
@@ -36,53 +36,36 @@ module.exports = async function arcBucketMacro(arc, cloudformation, stage) {
   })
   const aws = new AWS.S3();
   // for each bucket:
-  await Promise.all(config.map(b => {
-    return new Promise(async (resolve) => {
-      let bucketName = b[0];
-      if (b.length > 1) {
-        // abort if bucket does not match requested stage:
-        if (b[0] !== stage) {
-          return resolve();
-        }
-        // bucketname will be "{name}-production" or "{name}-staging"
-        // if bucket is marked 'unique' it will have a timestamp appended to the end:
-        bucketName = `${b[1]}${b[2] && b[2].toLowerCase() === 'unique' ? new Date().getTime() : ''}`;
+  config.map(async b => {
+    let bucketName = b[0];
+    if (b.length > 1) {
+      // abort if bucket does not match requested stage:
+      if (b[0] !== stage) {
+        return;
       }
-      // see if buckets exist on s3:
-      let exists = false;
-      const params = {
-        Bucket: bucketName,
-      };
-      try {
-        const res = await aws.headBucket({ Bucket: bucketName }).promise();
-        exists = true;
-      } catch (e) {
-        // throws error if bucket does not exist
+      // bucketname will be "{name}-production" or "{name}-staging"
+      // if bucket is marked 'unique' it will have a timestamp appended to the end:
+      bucketName = `${b[1]}${b[2] && b[2].toLowerCase() === 'unique' ? new Date().getTime() : ''}`;
+    }
+    cloudformation.Resources[bucketName] = {
+      Type: "AWS::S3::Bucket",
+      Properties: {
+        BucketName: bucketName,
+        // todo: any other properties we want?
       }
-      // create bucket in the cloudformation template if it doesn't exist:
-      if (!exists) {
-        cloudformation.Resources[bucketName] = {
-          Type: "AWS::S3::Bucket",
-          Properties: {
-            BucketName: bucketName,
-            // todo: any other properties we want?
-          }
-        };
+    };
+    const env = process.env.S3_BUCKET || '';
+    // modify arcformation
+    cloudformation.Resources.Role.Properties.Policies.push({
+      PolicyName: `ArcS3Access-${bucketName}`,
+      PolicyDocument: {
+        Statement: [{
+          Effect: 'Allow',
+          Action: 's3:*',
+          Resource: `arn:aws:s3:::${bucketName}/*`
+        }]
       }
-      const env = process.env.S3_BUCKET || '';
-      // modify arcformation
-      cloudformation.Resources.Role.Properties.Policies.push({
-        PolicyName: `ArcS3Access-${bucketName}`,
-        PolicyDocument: {
-          Statement: [{
-            Effect: 'Allow',
-            Action: 's3:*',
-            Resource: `arn:aws:s3:::${bucketName}/*`
-          }]
-        }
-      });
-      return resolve();
     });
-  }));
+  });
   return cloudformation
 }
