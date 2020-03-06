@@ -1,5 +1,5 @@
 {
-  "name": "@firstandthird/arc-s3-bucket",
+  "name": "@firstandthird/arc-macro-s3-bucket",
   "version": "1.0.0",
   "description": "arc macro for making s3 buckets",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/firstandthird/arc-s3-bucket.git"
+    "url": "git+https://github.com/firstandthird/arc-macro-s3-bucket.git"
   },
   "author": "First & Third",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/firstandthird/arc-s3-bucket/issues"
+    "url": "https://github.com/firstandthird/arc-macro-s3-bucket/issues"
   },
-  "homepage": "https://github.com/firstandthird/arc-s3-bucket#readme",
+  "homepage": "https://github.com/firstandthird/arc-macro-s3-bucket#readme",
   "eslintConfig": {
     "extends": "firstandthird"
   },
