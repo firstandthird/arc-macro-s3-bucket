@@ -22,7 +22,14 @@ module.exports = function arcBucketMacro(arc, cloudformation, stage) {
       Statement: [{
         Effect: 'Allow',
         Action: 's3:*',
-        Resource: { 'Fn::GetAtt': ['ArcS3Bucket', 'Arn'] }
+        Resource: [
+          { 'Fn::GetAtt': ['ArcS3Bucket', 'Arn'] },
+          { 'Fn::Join': ['', [
+            { 'Fn::GetAtt': ['ArcS3Bucket', 'Arn'] },
+            '/*'
+          ]]
+          }
+        ]
       }]
     }
   });
