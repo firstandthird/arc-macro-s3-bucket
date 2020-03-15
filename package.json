@@ -1,5 +1,5 @@
 {
-  "name": "@firstandthird/arc-macro-s3-bucket",
+  "name": "arc-macro-s3-bucket",
   "version": "1.0.0",
   "description": "arc macro for making s3 buckets",
   "main": "index.js",
