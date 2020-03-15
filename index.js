@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk');
 const caps = require('lodash.capitalize');
 
 /**
@@ -34,7 +33,6 @@ module.exports = function arcBucketMacro(arc, cloudformation, stage) {
       cloudformation.Resources[p].Properties.Environment.Variables.S3_BUCKET = s3Bucket;
     }
   })
-  const aws = new AWS.S3();
   // for each bucket:
   config.map(async b => {
     let bucketName = b[0];

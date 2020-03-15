@@ -20,7 +20,6 @@
     "extends": "firstandthird"
   },
   "dependencies": {
-    "aws-sdk": "^2.623.0",
     "lodash.capitalize": "^4.2.1"
   },
   "devDependencies": {
