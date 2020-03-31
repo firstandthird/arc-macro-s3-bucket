@@ -11,9 +11,11 @@ module.exports = function arcBucketMacro(arc, cloudformation, stage) {
   cloudformation.Resources.ArcS3Bucket = {
     Type: 'AWS::S3::Bucket'
   };
-  if (arc.s3 === 'versioning') {
+  if (arc.s3[0] === 'versioning') {
     cloudformation.Resources.ArcS3Bucket.Properties = {
-      VersioningConfiguration: 'Enabled'
+      VersioningConfiguration: {
+        Status: 'Enabled'
+      }
     };
   }
 
