@@ -11,6 +11,14 @@ module.exports = function arcBucketMacro(arc, cloudformation, stage) {
   cloudformation.Resources.ArcS3Bucket = {
     Type: 'AWS::S3::Bucket'
   };
+  if (arc.s3[0] === 'versioning') {
+    cloudformation.Resources.ArcS3Bucket.Properties = {
+      VersioningConfiguration: {
+        Status: 'Enabled'
+      }
+    };
+  }
+
   Object.entries(cloudformation.Resources).forEach(([key, value]) => {
     if (value.Type && value.Type === 'AWS::Serverless::Function') {
       cloudformation.Resources[key].Properties.Environment.Variables.S3_BUCKET = { Ref: 'ArcS3Bucket' };
